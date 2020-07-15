@@ -1,0 +1,58 @@
+{
+  "people": [
+    {
+      "id": 2,
+      "fname": "Mr. Albina Goodwin",
+      "lname": "Collier",
+      "skills": "frontend"
+    },
+    {
+      "id": 3,
+      "fname": "Grover O'Reilly",
+      "lname": "Schuppe",
+      "skills": "backend"
+    },
+    {
+      "id": 4,
+      "fname": "Morton Bins",
+      "lname": "Moore",
+      "skills": "backend"
+    },
+    {
+      "id": 5,
+      "fname": "Joseph Borer Sr.",
+      "lname": "Thompson",
+      "skills": "somethingelse"
+    },
+    {
+      "id": 6,
+      "fname": "Valentine Hand",
+      "lname": "Gleichner",
+      "skills": "somethingelse"
+    },
+    {
+      "id": 7,
+      "fname": "Alta Morar",
+      "lname": "O'Conner",
+      "skills": "frontend"
+    },
+    {
+      "id": 8,
+      "fname": "Gianni Gulgowski",
+      "lname": "Cruickshank",
+      "skills": "somethingelse"
+    },
+    {
+      "id": 9,
+      "fname": "Jett Kirlin",
+      "lname": "Jakubowski",
+      "skills": "backend"
+    },
+    {
+      "fname": "kristina",
+      "lname": "novitskaya",
+      "skills": "",
+      "id": 10
+    }
+  ]
+}
