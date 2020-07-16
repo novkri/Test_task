@@ -1,11 +1,18 @@
 <template>
   <div class="container" id="app" >
+    <!-- :popupTitle="person.id" -->
     <Popup 
+      :popup-content="popupContent"
+      :popup-title="btnName"
+      :person-id="personId"
       v-if="isShowPopupVisible"
       @closePopup="closeAddPopup"
       v-model="contacts"
     >
-    
+      <!-- <p>{{this.person}}</p>
+      <p>{{this.people}}</p> -->
+      <!-- <p slot="title"></p>
+      <p></p> -->
     </Popup>
   <!-- <h1 class="header">Заголовок</h1> -->
   <div class="wrapper">
@@ -45,7 +52,10 @@ export default {
   name: 'list',
   data() {
     return {
+      btnName: '',
+      popupContent: '',
       isShowPopupVisible: false,
+      personId: null,
       people: [],
       person: {
         // id: '',
@@ -72,6 +82,8 @@ export default {
   methods: {
     showPopupAdd() {
       this.isShowPopupVisible = true
+      this.btnName = "Добавить сотрудника"
+      this.popupContent = "add"
     },
     closeAddPopup() {
       this.isShowPopupVisible = false
@@ -79,6 +91,10 @@ export default {
 
     async editPerson(id) {
       const contact = this.people.find(c => c.id === id)
+      this.isShowPopupVisible = true
+      this.btnName = "Редактирование"
+      this.popupContent = "edit"
+      this.personId = contact
       console.log(contact);
       // const updated = await fetch(`/api/contacts/${id}`, 'PUT', {
       //   ...contact, 
@@ -86,10 +102,14 @@ export default {
       // })
       // contact.marked = updated.marked
     },
+    
     async removePerson(id) {
+      this.isShowPopupVisible = true
+      this.btnName = "Удаление..."
+      this.popupContent = "delete"
       const contact = this.people.find(c => c.id === id)
       await axios.delete(baseURL+`/${id}`, contact)
-      this.people =  this.people.filter(c => c.id !== id)
+      // this.people =  this.people.filter(c => c.id !== id) -- нужно!
  
     }
   }
@@ -102,6 +122,7 @@ export default {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
 }
 
 body {
@@ -181,6 +202,7 @@ body {
   -webkit-transition-duration: 0.4s; 
   -moz-transition-duration: 0.4s;
   -o-transition-duration: 0.4s;
+  -ms-transition-duration: 0.4s;
   transition-duration: 0.4s;
 
   background-color: white;
@@ -211,6 +233,7 @@ body {
   -webkit-transition-duration: 0.4s; 
   -moz-transition-duration: 0.4s;
   -o-transition-duration: 0.4s;
+  -ms-transition-duration: 0.4s;
   transition-duration: 0.4s;
 
   background-color: white;

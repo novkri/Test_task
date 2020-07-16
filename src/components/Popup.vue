@@ -1,14 +1,14 @@
 <template>
-  <transition name="modal">
+  <transition name="addModal">
     <div class="popup">
-      <div class="popup__wrapper">
+      <div class="popup__wrapper" ref="popup__wrapper">
         <div class="popup__container">
           <div class="popup__header">
-            <span>Popup name</span>
+            <span>{{popupTitle}}</span>
             <span class="close" @click="closePopup"></span>
-          </div>
+          </div> <!-- popup__header -->
           <div class="popup__content">
-              <form @submit="createPerson">
+              <form v-if="popupContent == 'add'" @submit="createPerson">
                 <div class="row">
                   <div class="col-25">
                     <label for="firstname">firstname</label>
@@ -38,13 +38,32 @@
                 </div>
             </form>
 
-            <slot></slot>
-          </div>
+            <!-- in progress... -->
+            <div v-if="popupContent == 'edit'">
+              <span>editing:</span><br>
+              <span>{{personId.id}}</span><br>
+              <span>{{personId.fname}}</span><br>
+              <span>{{personId.lname}}</span><br>
+              <span>{{personId.skills}}</span><br>
+              <form action=""></form>
+            </div>
 
-        </div>
-      </div>
+            <!-- in progress... -->
+            <div v-if="popupContent == 'delete'">
+              <span>Удалить сотрудника?</span>
+              <br>
+              <a href="">Да</a>
+              <br>
+              <a href="">Нет</a>
+            </div>
+
+
+          </div> <!-- popup__content --> 
+
+        </div> <!-- popup__container --> 
+      </div> <!-- popup__wrapper --> 
       
-    </div>
+    </div> <!-- popup --> 
   </transition>
 </template>
 
@@ -53,9 +72,10 @@ import axios from 'axios';
 
 export default {
     name: 'popup',
-    props: ['value'],
+    props: ['popupTitle', 'popupContent', 'personId'],
     data() {
       return {
+        
         person: {
         // id: '',
         fname: '',
@@ -70,10 +90,19 @@ export default {
         return this.person.fname.trim() && this.person.lname.trim()
       }
     },
+    mounted() {
+      let vm = this
+      document.addEventListener('click', function(item) {
+        if (item.target === vm.$refs['popup__wrapper']) {
+          vm.closePopup()
+        }
+      })
+    },
     methods: {
       closePopup() {
         this.$emit('closePopup')
       },
+      
       async createPerson() {
         const {...contact} = this.person
         console.log(contact);
@@ -101,13 +130,22 @@ export default {
   transition: opacity 0.3s ease;
   -webkit-transition: opacity 0.3s ease; 
   -moz-transition: opacity 0.3s ease; 
+  -ms-transition: opacity 0.3s ease; 
   -o-transition: opacity 0.3s ease;
   /* letter-spacing: 1px; */
 }
 
 .popup__wrapper {
-  display: table-cell;
-  vertical-align: middle;
+  /* display: table-cell;
+  vertical-align: middle; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .popup__container {
@@ -120,6 +158,7 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
+  -ms-transition: opacity 0.3s ease; 
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
   /* font-family: Helvetica, Arial, sans-serif; */
@@ -233,6 +272,7 @@ label {
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
   -o-transform: rotate(45deg);
 }
 
@@ -240,6 +280,7 @@ label {
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
 }
 
