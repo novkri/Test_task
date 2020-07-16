@@ -1,22 +1,40 @@
 {
   "people": [
     {
-      "id": 8,
-      "fname": "Gianni Gulgowski",
-      "lname": "Cruickshank",
-      "skills": "somethingelse"
+      "id": 6,
+      "fname": "Helmer Ondricka",
+      "lname": "Reichel",
+      "skills": "frontend"
     },
     {
-      "id": 9,
-      "fname": "Jett Kirlin",
-      "lname": "Jakubowski",
+      "id": 7,
+      "fname": "Tia Jacobs Jr.",
+      "lname": "Leuschke",
       "skills": "backend"
     },
     {
-      "fname": "kristina",
-      "lname": "novitskaya",
+      "id": 8,
+      "fname": "Miss Clair Grant",
+      "lname": "Gulgowski",
+      "skills": "backend"
+    },
+    {
+      "id": 9,
+      "fname": "Preston Yundt",
+      "lname": "Jakubowski",
+      "skills": "somethingelse"
+    },
+    {
+      "id": 10,
+      "fname": "Francisco Parisian",
+      "lname": "Robel",
+      "skills": "backend"
+    },
+    {
+      "fname": "",
+      "lname": "",
       "skills": "",
-      "id": 10
+      "id": 11
     }
   ]
 }

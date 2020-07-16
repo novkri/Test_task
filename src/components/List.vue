@@ -19,6 +19,7 @@
     <table class="table">
       <thead>
         <tr>
+          <th>#</th>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Skills</th>
@@ -28,9 +29,10 @@
       </thead>
       <tbody>
         <tr v-for="person in people" :key="person.id" >
-          <td data-title="First Name">{{ person.fname}}</td>
-          <td data-title="Last Name">{{ person.lname}}</td>
-          <td data-title="Skills">{{ person.skills}}</td>
+          <td data-title="ID">{{person.id}}</td>
+          <td data-title="First Name">{{ person.fname }}</td>
+          <td data-title="Last Name">{{ person.lname }}</td>
+          <td data-title="Skills">{{ person.skills }}</td>
           <td data-title="Edit"><button @click="editPerson(person.id)" class="form__btn edit-btn">Edit</button></td>
           <td data-title="Delete"><button @click="removePerson(person.id)" class="form__btn delete-btn">Delete</button></td>
         </tr>
@@ -102,13 +104,16 @@ export default {
       // })
       // contact.marked = updated.marked
     },
-    
+    // id
     async removePerson(id) {
       this.isShowPopupVisible = true
-      this.btnName = "Удаление..."
+      this.btnName = "Удалить сотрудника?"
       this.popupContent = "delete"
+      
       const contact = this.people.find(c => c.id === id)
-      await axios.delete(baseURL+`/${id}`, contact)
+      this.personId = contact
+      console.log(contact);
+      // await axios.delete(baseURL+`/${id}`, contact)
       // this.people =  this.people.filter(c => c.id !== id) -- нужно!
  
     }

@@ -5,13 +5,13 @@
         <div class="popup__container">
           <div class="popup__header">
             <span>{{popupTitle}}</span>
-            <span class="close" @click="closePopup"></span>
+            <span class="close" @click="closePopup">X</span>
           </div> <!-- popup__header -->
           <div class="popup__content">
               <form v-if="popupContent == 'add'" @submit="createPerson">
                 <div class="row">
                   <div class="col-25">
-                    <label for="firstname">firstname</label>
+                    <label for="firstname">Имя</label>
                   </div>
                   <div class="col-75">
                     <input type="text" id="firstname" v-model="person.fname">
@@ -19,7 +19,7 @@
                 </div>
                 <div class="row">
                   <div class="col-25">
-                    <label for="lastname">lastname</label>
+                    <label for="lastname">Фамилия</label>
                   </div>
                   <div class="col-75">
                     <input type="text" id="lastname" v-model="person.lname">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="row">
                   <div class="col-25">
-                    <label for="skills">Skills</label>
+                    <label for="skills">Навыки</label>
                   </div>
                   <div class="col-75">
                     <input type="text" id="skills" v-model="person.skills">
@@ -36,7 +36,7 @@
                 <div class="row">
                   <button class="form-btn" type="submit" :disabled="!canCreate">Создать</button>
                 </div>
-            </form>
+            </form> <!-- form add -->
 
             <!-- in progress... -->
             <div v-if="popupContent == 'edit'">
@@ -46,16 +46,34 @@
               <span>{{personId.lname}}</span><br>
               <span>{{personId.skills}}</span><br>
               <form action=""></form>
-            </div>
+            </div> <!-- form edit -->
 
             <!-- in progress... -->
-            <div v-if="popupContent == 'delete'">
-              <span>Удалить сотрудника?</span>
+            <!-- нет стилей -->
+            <form action="">
+              <div v-if="popupContent == 'delete'" >
+              <div class="delete__wrapper">
+                <div class="delete__row">
+                  <span>ID: {{personId.id}}</span>
+                </div>
+                 <div class="delete__row">
+                   <span>Имя: {{personId.fname}}</span>
+                </div>
+                 <div class="delete__row">
+                   <span>Фамилия: {{personId.lname}}</span>
+                </div>
+                 <div class="delete__row">
+                   <span>Навыки: {{personId.skills}}</span>
+                </div>  
+              </div>
               <br>
-              <a href="">Да</a>
-              <br>
-              <a href="">Нет</a>
-            </div>
+              <div class="delete__buttons">
+                <button class="form-btn yes" @click="removePerson(personId.id)" type="submit">Да</button>
+                <button class="form-btn no" @click="closePopup" type="submit">Нет</button>
+              </div>
+            </div> <!-- form delete -->
+            </form>
+            
 
 
           </div> <!-- popup__content --> 
@@ -70,19 +88,20 @@
 <script>
 import axios from 'axios';
 
+const baseURL = "http://localhost:3000/people"
+
 export default {
     name: 'popup',
     props: ['popupTitle', 'popupContent', 'personId'],
     data() {
       return {
-        
         person: {
-        // id: '',
-        fname: '',
-        lname: '',
-        skills: ''
-      },
-      contacts: []
+          // id: '',
+          fname: '',
+          lname: '',
+          skills: ''
+        },
+        contacts: []
       }
     },
     computed: {
@@ -107,11 +126,17 @@ export default {
         const {...contact} = this.person
         console.log(contact);
 
-        const res = await axios.post("http://localhost:3000/people", {fname: this.person.fname, lname: this.person.lname, skills: this.person.skills})
+        const res = await axios.post(baseURL, {fname: this.person.fname, lname: this.person.lname, skills: this.person.skills})
 
         this.people.push(res)
 
         this.person.fname = this.person.lname = ''
+      },
+
+      async removePerson(id) {
+        console.log(id);
+        console.log(this.people);
+        await axios.delete(baseURL + `/${id}`)
       }
     }
 }
@@ -132,12 +157,9 @@ export default {
   -moz-transition: opacity 0.3s ease; 
   -ms-transition: opacity 0.3s ease; 
   -o-transition: opacity 0.3s ease;
-  /* letter-spacing: 1px; */
 }
 
 .popup__wrapper {
-  /* display: table-cell;
-  vertical-align: middle; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -161,7 +183,6 @@ export default {
   -ms-transition: opacity 0.3s ease; 
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
-  /* font-family: Helvetica, Arial, sans-serif; */
 }
 
 @media screen and (max-width: 576px) {
@@ -189,8 +210,7 @@ input {
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  /* box-sizing: border-box; */
-  /* resize: vertical; */
+  font-size: 16px;
 }
 
 label {
@@ -248,9 +268,6 @@ label {
 }
 
 .close {
-  position: relative;
-  width: 35px;
-  height: 37px;
   opacity: 0.3;
   cursor: pointer;
 }
@@ -259,29 +276,51 @@ label {
   opacity: 1;
 }
 
-.close:before, .close:after {
-  position: absolute;
-  left: 15px;
-  content: ' ';
-  height: 33px;
-  width: 2px;
-  background-color: #333;
+.delete__wrapper {
+  width: 100%;
+  margin-top: 15px;
+  /* border: 1px solid black; */
+}
+.delete__row {
+  margin: 10px 0;
 }
 
-.close:before {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
+.delete__buttons {
+  display: flex;
+    justify-content: space-between;
 }
 
-.close:after {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
+.delete__buttons .form-btn {
+  padding: 10px;
+  border-radius: 5px;
+  width: 110px;
+  text-align: center;
+  background-color: #fff;
+  color: #000;
+}
+
+.yes {
+  border: 2px solid #f44336;
+} 
+
+.no {
+  border: 2px solid #4CAF50;
+}
+
+.yes:hover, .yes:active {
+  background-color: #f44336;
+  color: #fff;
+} 
+
+.no:hover, .no:active {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+@media screen and (max-width: 576px) {
+  .delete__answer {
+    width: 50%;
+  }
 }
 
 </style>
