@@ -1,82 +1,125 @@
 <template>
   <div class="container" id="app" >
-    <transition v-if="isShowPopupVisible" >
-      <div class="popup">
-        <div class="popup__wrapper" ref="popup__wrapper">
-          <div class="popup__container">
-            <div class="popup__header">
-              <span>{{btnName}}</span>
-              <span class="close" @click="closeAddPopup">X</span>
-            </div> <!-- popup__header -->
-            <div class="popup__content">
-              <form v-if="popupContent == 'add'" @submit="createPerson">
+    <div class="popup" v-if="isShowPopupVisible">
+      <div class="popup__wrapper" ref="popup__wrapper">
+        <div class="popup__container">
+          <div class="popup__header">
+            <span>{{btnName}}</span>
+            <span class="close" @click="closeAddPopup">X</span>
+          </div> <!-- popup__header -->
+          <div class="popup__content">
+            <form v-if="popupContent == 'add'" @submit="createPerson">
+                <div class="row">
+                  <div class="col-30">
+                    <label for="firstname">Имя</label>
+                  </div>
+                  <div class="col-70">
+                    <input type="text" id="firstname" v-model="person.fname">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-30">
+                    <label for="lastname">Фамилия</label>
+                  </div>
+                  <div class="col-70">
+                    <input type="text" id="lastname" v-model="person.lname">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-30">
+                    <label for="skills">Навыки</label>
+                  </div>
+                  <div class="col-70">
+                    <input type="text" id="skills" v-model="person.skills">
+                  </div>
+                </div>
+                <div class="row">
+                  <button class="form-btn" type="submit" :disabled="!canCreate">Создать</button>
+                </div>
+            </form> <!-- form add -->
+
+            <!-- in progress... -->
+            <div v-if="popupContent == 'edit'">
+              <div class="popup__wrapper-small">
+                <!-- <div class="row">
+                  <div class="col-30">ID</div>
+                  <div class="col-70">{{personId.id}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-30">Имя</div>
+                  <div class="col-70">{{personId.fname}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-30">Фамилия</div>
+                  <div class="col-70">{{personId.lname}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-30">Навыки</div>
+                  <div class="col-70">{{personId.skills}}</div>
+                </div>   -->
+                <form v-if="popupContent == 'edit'" @submit="editPerson(personId.id)">
                   <div class="row">
-                    <div class="col-25">
+                    <div class="col-30">
                       <label for="firstname">Имя</label>
                     </div>
-                    <div class="col-75">
-                      <input type="text" id="firstname" v-model="person.fname">
+                    <div class="col-70">
+                      <input type="text" id="firstname" v-model="personId.fname">
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-25">
+                    <div class="col-30">
                       <label for="lastname">Фамилия</label>
                     </div>
-                    <div class="col-75">
-                      <input type="text" id="lastname" v-model="person.lname">
+                    <div class="col-70">
+                      <input type="text" id="lastname" v-model="personId.lname">
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-25">
+                    <div class="col-30">
                       <label for="skills">Навыки</label>
                     </div>
-                    <div class="col-75">
-                      <input type="text" id="skills" v-model="person.skills">
+                    <div class="col-70">
+                      <input type="text" id="skills" v-model="personId.skills">
                     </div>
                   </div>
                   <div class="row">
-                    <button class="form-btn" type="submit" :disabled="!canCreate">Создать</button>
+                    <button class="form-btn" type="submit">Создать</button>
                   </div>
-              </form> <!-- form add -->
+              </form> <!-- form edit -->
+              </div>
+            </div> <!-- form edit -->
 
-              <!-- in progress... -->
-              <div v-if="popupContent == 'edit'">
-                <span>editing:</span><br>
-                <span>{{personId.id}}</span><br>
-                <span>{{personId.fname}}</span><br>
-                <span>{{personId.lname}}</span><br>
-                <span>{{personId.skills}}</span><br>
-                <form action=""></form>
-              </div> <!-- form edit -->
-
-              <div v-if="popupContent == 'delete'" >
-                <div class="delete__wrapper">
-                  <div class="delete__row">
-                    <span>ID: {{personId.id}}</span>
-                  </div>
-                  <div class="delete__row">
-                    <span>Имя: {{personId.fname}}</span>
-                  </div>
-                  <div class="delete__row">
-                    <span>Фамилия: {{personId.lname}}</span>
-                  </div>
-                  <div class="delete__row">
-                    <span>Навыки: {{personId.skills}}</span>
-                  </div>  
+            <div v-if="popupContent == 'delete'" >
+              <div class="popup__wrapper-small">
+                <div class="row">
+                  <div class="col-30">ID</div>
+                  <div class="col-70">{{personId.id}}</div>
                 </div>
-                <br>
-                <div class="delete__buttons">
-                  <span class="form-btn yes" @click="removePerson(personId.id)">Да</span>
-                  <span class="form-btn no" @click="closeAddPopup">Нет</span>
+                <div class="row">
+                  <div class="col-30">Имя</div>
+                  <div class="col-70">{{personId.fname}}</div>
                 </div>
-              </div> <!-- form delete -->
-            </div> <!-- popup__content --> 
+                <div class="row">
+                  <div class="col-30">Фамилия</div>
+                  <div class="col-70">{{personId.lname}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-30">Навыки</div>
+                  <div class="col-70">{{personId.skills}}</div>
+                </div>  
+              </div>
+              <br>
+              <div class="delete__buttons">
+                <span class="form-btn yes" @click="removePerson(personId.id)">Да</span>
+                <span class="form-btn no" @click="closeAddPopup">Нет</span>
+              </div>
+            </div> <!-- form delete -->
+          </div> <!-- popup__content --> 
 
-          </div> <!-- popup__container --> 
-        </div> <!-- popup__wrapper --> 
-        
-      </div> <!-- popup --> 
-    </transition>
+        </div> <!-- popup__container --> 
+      </div> <!-- popup__wrapper --> 
+      
+    </div> <!-- popup --> 
 
   <!-- <h1 class="header">Заголовок</h1> -->
   <div class="wrapper">
@@ -152,8 +195,8 @@ export default {
   },
   methods: {
     async createPerson() {
-      const res = await axios.post(baseURL, {fname: this.person.fname, lname: this.person.lname, skills: this.person.skills})
-      this.people.push(res)
+      const newPerson = await axios.post(baseURL, {fname: this.person.fname, lname: this.person.lname, skills: this.person.skills})
+      this.people.push(newPerson)
       this.person.fname = this.person.lname = ''
     },
     showPopupAdd() {
@@ -178,21 +221,12 @@ export default {
     closeAddPopup() {
       this.isShowPopupVisible = false
     },
-
-// not done
     async editPerson(id) {
       const contact = this.people.find(c => c.id === id)
       this.isShowPopupVisible = true
       this.btnName = "Редактирование"
       this.popupContent = "edit"
-      // this.personId = contact
-      console.log(contact);
-      
-      // const updated = await fetch(`/api/contacts/${id}`, 'PUT', {
-      //   ...contact, 
-      //   marked: true
-      // })
-      // contact.marked = updated.marked
+      await axios.patch(baseURL + `/${id}`, {fname: contact.fname, lname: contact.lname, skills: contact.skills})
     },
     async removePerson(id) {
       this.isShowPopupVisible = true
@@ -429,13 +463,13 @@ label {
   border-radius: 5px;
 }
 
-.col-25 {
+.col-30 {
   float: left;
   width: 30%;
   margin-top: 6px;
 }
 
-.col-75 {
+.col-70 {
   float: left;
   width: 70%;
   margin-top: 6px;
@@ -448,7 +482,7 @@ label {
 }
 
 @media screen and (max-width: 576px) {
-  .col-25, .col-75, input {
+  .col-30, .col-70, input {
     width: 100%;
     margin-top: 0;
   }
@@ -467,9 +501,10 @@ label {
   opacity: 1;
 }
 
-.delete__wrapper {
+.popup__wrapper-small {
   width: 100%;
   margin-top: 15px;
+  text-align: start
 }
 
 .delete__row {
