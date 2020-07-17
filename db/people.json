@@ -1,39 +1,27 @@
 {
   "people": [
     {
-      "id": 6,
-      "fname": "Helmer Ondricka",
-      "lname": "Reichel",
-      "skills": "frontend"
-    },
-    {
-      "id": 7,
-      "fname": "Tia Jacobs Jr.",
-      "lname": "Leuschke",
-      "skills": "backend"
-    },
-    {
       "id": 8,
-      "fname": "Miss Clair Grant",
-      "lname": "Gulgowski",
-      "skills": "backend"
+      "fname": "Eleonore Rippin",
+      "lname": "Stracke",
+      "skills": "somethingelse"
     },
     {
       "id": 9,
-      "fname": "Preston Yundt",
-      "lname": "Jakubowski",
+      "fname": "Marisol King DVM",
+      "lname": "Kovacek",
       "skills": "somethingelse"
     },
     {
       "id": 10,
-      "fname": "Francisco Parisian",
-      "lname": "Robel",
+      "fname": "Geovanni Lowe",
+      "lname": "West",
       "skills": "backend"
     },
     {
-      "fname": "",
-      "lname": "",
-      "skills": "",
+      "fname": "kristina",
+      "lname": "novitskaya",
+      "skills": "2222",
       "id": 11
     }
   ]
