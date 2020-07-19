@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "start json-server ./db/people.json && start vue-cli-service serve",
+    "run": "start vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "generate": "json-server ./db/generate.js"
@@ -14,6 +15,7 @@
     "faker": "^4.1.0",
     "json-server": "^0.16.1",
     "lodash": "^4.17.19",
+    "materialize-css": "^1.0.0-rc.2",
     "npm-run-all": "^4.1.5",
     "vue": "^2.6.11"
   },

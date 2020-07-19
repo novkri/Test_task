@@ -1,7 +1,7 @@
 <template>
-  <div class="container" id="app" >
+<div class="container" id="app" >
     <div class="popup" v-if="isShowPopupVisible">
-      <div class="popup__wrapper" ref="popup__wrapper">
+      <div class="popup__wrapper">
         <div class="popup__container">
           <div class="popup__header">
             <span>{{btnName}}</span>
@@ -38,25 +38,8 @@
                 </div>
             </form> <!-- form add -->
 
-            <!-- in progress... -->
             <div v-if="popupContent == 'edit'">
               <div class="popup__wrapper-small">
-                <!-- <div class="row">
-                  <div class="col-30">ID</div>
-                  <div class="col-70">{{personId.id}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-30">Имя</div>
-                  <div class="col-70">{{personId.fname}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-30">Фамилия</div>
-                  <div class="col-70">{{personId.lname}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-30">Навыки</div>
-                  <div class="col-70">{{personId.skills}}</div>
-                </div>   -->
                 <form v-if="popupContent == 'edit'" @submit="editPerson(personId.id)">
                   <div class="row">
                     <div class="col-30">
@@ -83,7 +66,7 @@
                     </div>
                   </div>
                   <div class="row">
-                    <button class="form-btn" type="submit">Создать</button>
+                    <button class="form-btn" type="submit">Изменить</button>
                   </div>
               </form> <!-- form edit -->
               </div>
@@ -92,21 +75,11 @@
             <div v-if="popupContent == 'delete'" >
               <div class="popup__wrapper-small">
                 <div class="row">
-                  <div class="col-30">ID</div>
-                  <div class="col-70">{{personId.id}}</div>
+                  <div class="col-30">ID: {{personId.id}}</div>
                 </div>
                 <div class="row">
-                  <div class="col-30">Имя</div>
-                  <div class="col-70">{{personId.fname}}</div>
+                  <div class="col-70">{{personId.fname}} {{personId.lname}}</div>
                 </div>
-                <div class="row">
-                  <div class="col-30">Фамилия</div>
-                  <div class="col-70">{{personId.lname}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-30">Навыки</div>
-                  <div class="col-70">{{personId.skills}}</div>
-                </div>  
               </div>
               <br>
               <div class="delete__buttons">
@@ -121,7 +94,7 @@
       
     </div> <!-- popup --> 
 
-  <!-- <h1 class="header">Заголовок</h1> -->
+  <!-- main table -->
   <div class="wrapper">
     <table class="table">
       <thead>
@@ -135,23 +108,27 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="person in people" :key="person.id" >
-          <td data-title="ID">{{ person.id }}</td>
+        <tr v-for="(person, i) in people" :key="i" >
+          <td data-title="ID">{{ i + 1 }}</td>
           <td data-title="First Name">{{ person.fname }}</td>
           <td data-title="Last Name">{{ person.lname }}</td>
           <td data-title="Skills">{{ person.skills }}</td>
-          <td data-title="Edit"><button @click="showPopupEdit(person.id)" class="form__btn edit-btn">Edit</button></td>
-          <td data-title="Delete"><button @click="showPopupDelete(person.id)" class="form__btn delete-btn">Delete</button></td>
+          <td data-title="Edit"><span @click="showPopupEdit(person.id)" class="form__btn edit-btn">Edit</span></td>
+          <td data-title="Delete"><span @click="showPopupDelete(person.id)" class="form__btn delete-btn">Delete</span></td>
         </tr>
       </tbody>
     </table>
-    <button class="show__popup" @click="showPopupAdd">Создать</button>
+    <div class="table">{{msg}}</div>
+    <div class="show__popup" @click="showPopupAdd"><span>Создать</span></div>
+    
   </div> <!-- div.wrapper -->
 </div>
 </template>
 
 <script>
 import axios from 'axios';
+// import M from "materialize-css";
+import messages from '@/utils/messages'
 
 const baseURL = "http://localhost:3000/people"
 
@@ -162,14 +139,14 @@ export default {
       btnName: '',
       popupContent: '',
       isShowPopupVisible: false,
-      personId: null,
+      personId: undefined,
       people: [],
       person: {
         fname: '',
         lname: '',
         skills: ''
       },
-      contacts: []
+      msg: ''
     }
   },
   computed: {
@@ -178,26 +155,60 @@ export default {
     }
   },
   mounted() {
+    //закрыть попап по области вокруг
     let vm = this
     document.addEventListener('click', function(item) {
       if (item.target === vm.$refs['popup__wrapper']) {
         vm.closeAddPopup()
       }
     })
+
+    // this.$message(messages['200'])
+  },
+  updated() {
+    this.$message(messages[this.msg])
   },
   async created() {
     try {
-      const res = await axios.get(baseURL)
-      this.people = res.data
+      const response = await axios.get(baseURL)
+      this.people = response.data
+      // this.msg = '200'
     } catch (e) {
       console.log(e);
+      this.msg = 'noserver'
+      // this.$message(messages['noserver'])
     }
   },
   methods: {
     async createPerson() {
-      const newPerson = await axios.post(baseURL, {fname: this.person.fname, lname: this.person.lname, skills: this.person.skills})
-      this.people.push(newPerson)
-      this.person.fname = this.person.lname = ''
+      try {
+        const newPerson = await axios.post(baseURL, {fname: this.person.fname, lname: this.person.lname, skills: this.person.skills})
+        this.people.push(newPerson)
+        this.person.fname = this.person.lname = ''
+        this.msg = '200'
+      } catch (e) {
+        console.log(e);
+        // this.$message(messages['200'])
+      }
+    },
+    async editPerson(id) {
+      try {
+        this.isShowPopupVisible = true
+        const contact = this.people.find(c => c.id === id)
+        await axios.patch(baseURL + `/${id}`, {fname: contact.fname, lname: contact.lname, skills: contact.skills})
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async removePerson(id) {
+      try {
+        this.isShowPopupVisible = true  
+        await axios.delete(baseURL + `/${id}`)
+        this.isShowPopupVisible = false
+        this.people =  this.people.filter(c => c.id !== id)
+      } catch (e) {
+        console.log(e)
+      }
     },
     showPopupAdd() {
       this.isShowPopupVisible = true
@@ -213,29 +224,13 @@ export default {
     },
     showPopupDelete(id) {
       this.isShowPopupVisible = true
-      this.btnName = "Удалить сотрудника"
+      this.btnName = "Удалить сотрудника?"
       this.popupContent = "delete"
       const contact = this.people.find(c => c.id === id)
       this.personId = contact
     },
     closeAddPopup() {
       this.isShowPopupVisible = false
-    },
-    async editPerson(id) {
-      const contact = this.people.find(c => c.id === id)
-      this.isShowPopupVisible = true
-      this.btnName = "Редактирование"
-      this.popupContent = "edit"
-      await axios.patch(baseURL + `/${id}`, {fname: contact.fname, lname: contact.lname, skills: contact.skills})
-    },
-    async removePerson(id) {
-      this.isShowPopupVisible = true
-      this.btnName = "Удалить сотрудника?"
-      this.popupContent = "delete"
-      
-      await axios.delete(baseURL + `/${id}`)
-      this.isShowPopupVisible = false
-      this.people =  this.people.filter(c => c.id !== id)
     }
   }
 }
@@ -258,6 +253,7 @@ body {
 
 .table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
 }
 
@@ -284,7 +280,9 @@ body {
   }
 
   .table, .table tbody, .table tr, .table td {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     width: 100%;
   }
 
@@ -295,7 +293,7 @@ body {
   .table td {
     text-align: right;
     padding-left: 50%;
-    position: relative;
+    position: relative; 
   }
 
   .table td::before {
@@ -329,6 +327,7 @@ body {
   color: black;
   border: 2px solid #4CAF50;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .show__popup:hover, .show__popup:active {
@@ -337,19 +336,20 @@ body {
 }
 
 @media screen and (max-width: 576px) {
-  .header {
-    visibility: hidden;
-  }
+
   .show__popup {
     position: absolute;
     top: 0;
     right: 21px;
+    margin-top: 15px;
   }
 }
 
 .form__btn {
-  padding: 10px 15px;
+  display: inline-flex;
 
+  padding: 10px 15px;
+  cursor: pointer;
   -webkit-transition-duration: 0.4s; 
   -moz-transition-duration: 0.4s;
   -o-transition-duration: 0.4s;

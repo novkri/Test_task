@@ -5,6 +5,7 @@
 </template>
 
 <script>
+// import '..~materialize-css/dist/css/materialize.min.css'
 import List from './components/List.vue'
 
 export default {
